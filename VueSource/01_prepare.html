@@ -29,6 +29,14 @@
   const lis = document.getElementsByTagName('li')
   console.log(lis instanceof Array,lis.forEach)
 
+  Array.prototype.slice2 = function (start=0,end=Array.length) {
+    const result = []
+    for(let i=start;i<end;i++){
+      result.push(this[i])
+    }
+    return result
+  }
+
   const lis2 = Array.prototype.slice.call(lis)
   console.log(lis2 instanceof Array,lis2.forEach)
   // 2. node.nodeType:得到节点类型
@@ -52,8 +60,8 @@
   p.firstName = 'C'
   p.lastName = 'D'
   console.log(p.fullName)
-  p.fullName = 'E-F'
-  console.log(p.firstName,p.lastName)
+  p.fullName = 'E-F'  // 自动调用setter
+  console.log(p.firstName, p.lastName) // E F     //setter
   // 4. Object.keys(obj): 得到对象自身可枚举属性组成的数组
   const names =Object.keys(p)
   console.log(names)
@@ -61,7 +69,23 @@
   console.log(p.toString,p.hasOwnProperty('toString'))
   console.log(p.firstName,p.hasOwnProperty('firstName'))
   // 6. DocumentFragment: 文档碎片(高效批量更新多个节点)
-
+  /*1.创建容器，fragment*/
+  const fragment = document.createDocumentFragment() //内存中的容器节点
+  /*2.取出ul中所有的子节点添加到fragment容器中*/
+  const ul = document.getElementById('fragment_test')
+  let child
+  while(child = ul.firstChild){  //一个节点只能有一个父亲
+    fragment.appendChild(child)  // 从ul中移除child节点, 将child添加为fragment的子节点
+  }
+  /*3.遍历fragment中所有的li，并修改其标签体文本atguigu*/
+  const nodes = fragment.childNodes
+  Array.prototype.slice.call(nodes).forEach(node=>{
+    if(node.nodeType===1){
+      node.textContent = 'atguigu1'  //此时并没有更新界面
+    }
+  })
+  /*4.将fragment添加到ul中*/
+  ul.appendChild(fragment)
 </script>
 </body>
 </html>
